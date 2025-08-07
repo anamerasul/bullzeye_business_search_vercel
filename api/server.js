@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const XLSX = require('xlsx');
+const path = require('path');
 
 const app = express();
 
@@ -20,6 +21,14 @@ const allowedEngines = ['google_maps', 'google', 'bing_maps', 'apple_maps'];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from public folder (for css, js, images)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve index.html on root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // -------------------- Helper: fetch businesses --------------------
 async function fetchBusinesses(searchQuery, region, engine = 'google_maps') {
@@ -47,11 +56,6 @@ async function fetchBusinesses(searchQuery, region, engine = 'google_maps') {
 }
 
 // -------------------- Routes --------------------
-
-// Serve homepage (if you want static files, use Vercel public folder instead)
-app.get('/', (req, res) => {
-  res.send('Business Search API - Use /search endpoint');
-});
 
 app.post('/search', async (req, res) => {
   const { keyword, country, city, engine } = req.body;
