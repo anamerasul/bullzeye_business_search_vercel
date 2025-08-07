@@ -1,1 +1,1 @@
-# bullzeye_business_search_vercel
+# bullzeye_business_search
